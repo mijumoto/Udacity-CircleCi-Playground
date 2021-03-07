@@ -1,16 +1,18 @@
 version: 2.1
-commands:
-  print_pipeline_id:
-    description: "A very simple command for demonstration purposes"
-    steps:
-      - run: echo $CIRCLE_WORKFLOW_ID
 
+orbs:
+  slack: circleci/slack@4.3.0
+  
 jobs:
   save_hello_world_output:
     docker:
-      - image: circleci/node:13.8.0
+      - image: 'cimg/base:stable'
     steps:
-      - print_pipeline_id
+      - run: return 1
+      - slack/notify:
+          event: fail
+          mentions: '@m'
+          template: basic_fail_1
 workflows:
   my_workflow:
     jobs:
