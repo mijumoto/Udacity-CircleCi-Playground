@@ -1,19 +1,14 @@
 version: 2.1
 
-orbs:
-  slack: circleci/slack@4.3.0
-  
 jobs:
-  save_hello_world_output:
+  create_infrastructure:
     docker:
-      - image: 'cimg/base:stable'
+      - image: 'amazon/aws-cli'
     steps:
-      - run: return 1
-      - slack/notify:
-          event: fail
-          mentions: '@m'
-          template: basic_fail_1
+      - checkout
+      - run: echo $AWS_ACCESS_KEY_ID
+      - run: aws cloudformation create-stack --stack-name 'CircleCi' --template-body file://cloudformation.yml  --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region=$AWS_DEFAULT_REGION
 workflows:
   my_workflow:
     jobs:
-      - save_hello_world_output
+      - create_infrastructure
